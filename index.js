@@ -17,12 +17,40 @@ app.use(express.json());
 // Connect the MongoDB Database with this Server
 const uri = `mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@cluster0.8ro0fiu.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
 
+async function run(){
+    try{
+        const brandCollection = client.db('sell-me-laptop').collection('brands');
+
+        /////Get all Categories from MongoDB (brands) collection
+        app.get('/categories', async (req,res)=>{
+            const query = {};
+            const cursor = brandCollection.find(query);
+            const brands = await cursor.toArray();
+            res.send(brands);
+        })
+         ///////////////////////////////////////////////////////////////////////////////////////
+        ///// Get Products of a particular Category from MongoDB (products) collection
+        ////////////////////////////////////////////////////////////////////////////////////////
+        const productsCollection = client.db("sell-me-laptop").collection('products');
+
+        app.get('/category/:id', async (req,res)=>{  
+             const id = req.params.id;
+             const query = { brand_id : id };    /////////////Get the products of a particular brand by using brand_id  in products collection
+             const cursor = productsCollection.find(query);
+             const products = await cursor.toArray();
+             const brandProducts = products.filter(function (element){
+                return element.brand ;
+             })
+             res.send(brandProducts);
+        })
+    }
+    finally{
+
+    }
+}
+
+run().catch(error => error.message);
 
 
 
