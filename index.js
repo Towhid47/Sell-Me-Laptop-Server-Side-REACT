@@ -34,9 +34,9 @@ async function run(){
         ////////////////////////////////////////////////////////////////////////////////////////
         const productsCollection = client.db("sell-me-laptop").collection('products');
 
-        app.get('/category/:id', async (req,res)=>{  
-             const id = req.params.id;
-             const query = { brand_id : id };    /////////////Get the products of a particular brand by using brand_id  in products collection
+        app.get('/category/:name', async (req,res)=>{  
+             const name = req.params.name;
+             const query = { brand : name };    /////////////Get the products of a particular brand by using brand name  in products collection
              const cursor = productsCollection.find(query);
              const products = await cursor.toArray();
              const brandProducts = products.filter(function (element){
