@@ -44,6 +44,26 @@ async function run(){
              })
              res.send(brandProducts);
         })
+
+        /////// insert new product Data into products Collection /////////////
+        app.post('/products',async (req,res)=>{
+            const product = req.body;
+            
+            const result = await productsCollection.insertOne(product);
+            res.send(result);
+        })
+
+        /////////////////////////////////////////////////////////////////////
+        //////    Creating Orders Collection in sell-me-laptop Database
+        ////////////////////////////////////////////////////////////////////
+        const ordersCollection = client.db("sell-me-laptop").collection('orders');
+
+        ///////////// inserting new Order Data to the Orders Collection /////////////
+        app.post('/orders', async (req, res )=>{
+            const order = req.body;
+            const result = await ordersCollection.insertOne(order);
+            res.send(result);
+        })
     }
     finally{
 
