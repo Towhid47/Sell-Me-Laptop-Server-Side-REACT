@@ -64,6 +64,24 @@ async function run(){
             const result = await ordersCollection.insertOne(order);
             res.send(result);
         })
+
+        ///////////// Get Data from Orders Collection ///////////////////////////
+        app.get('/orders', async (req,res)=>{
+            const email = req.query.email;
+            const query = { buyer_email : email };
+            const cursor = ordersCollection.find(query);
+            const orders = await cursor.toArray();
+            res.send(orders);
+        })
+
+        ///////////////Create Users collection in Database //////////////
+        const usersCollection = client.db("sell-me-laptop").collection('users');
+        
+        app.post('/users',async(req,res)=>{
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        })
     }
     finally{
 
